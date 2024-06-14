@@ -1,7 +1,7 @@
 const getIdString = (type) => {
     if (type == 'orders') {
         return 'number';
-    } else if (type == 'products_orders' || type == 'products_carts') {
+    } else if (type == 'products') {
         return 'product_id';
     } else {
         return 'id';
