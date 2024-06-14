@@ -29,8 +29,21 @@ const formatValues = (type, model) => {
     return values.join(', ');
 }
 
+const createWhereClause = (type, id, secondaryId) => {
+    if (type == 'products_orders') {
+        return `product_id = '${id}' AND order_number = ${secondaryId}`
+    } else if (type == 'products_carts') {
+        return `product_id = '${id}' AND cart_id = ${secondaryId}`
+    } else if (type == 'products') {
+        return `id = '${id}'`
+    } else {
+        return `${getIdString(type)} = ${id}`
+    }
+}
+
 module.exports = {
     getIdString,
     modelSchema,
-    formatValues
+    formatValues,
+    createWhereClause
 }

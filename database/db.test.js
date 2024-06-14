@@ -67,6 +67,47 @@ describe('util', () => {
             assert.equal(expected, actual);
         })
     })
+
+    describe('createWhereClause', () => {
+        it('creates a custom where clause for the products_orders type', () => {
+            const type = 'products_orders'
+            const id = '999'
+            const secondaryId = 999
+            const expected = "product_id = '999' AND order_number = 999";
+
+            const actual = util.createWhereClause(type, id, secondaryId)
+
+            assert.equal(expected, actual);
+        })
+        it('creates a custom where clause for the products_carts type', () => {
+            const type = 'products_carts'
+            const id = '999'
+            const secondaryId = 999
+            const expected = "product_id = '999' AND cart_id = 999";
+
+            const actual = util.createWhereClause(type, id, secondaryId)
+
+            assert.equal(expected, actual);
+        })
+        it('creates a custom where clause for the products type', () => {
+            const type = 'products'
+            const id = '999'
+            const expected = "id = '999'";
+
+            const actual = util.createWhereClause(type, id)
+
+            assert.equal(expected, actual);
+        })
+        it('returns id = {:id} for all others', () => {
+            const type = ''
+            const id = 999
+            const expected = "id = 999";
+
+            const actual = util.createWhereClause(type, id)
+
+            assert.equal(expected, actual);
+        })
+    })
 })
 
 describe('db', () => {
@@ -156,6 +197,16 @@ describe('db', () => {
             
             assert.equal(expected, actual);
         })
+        // it('retrieves a product from the database with a matching id', async () => {
+        //     const type = 'products'
+        //     const id = '999'
+        //     const expected = '999'
+
+        //     const response = await db.getInstanceById(type, id);
+        //     const actual = response.id;
+            
+        //     assert.equal(expected, actual);
+        // })
 
     })
 
