@@ -1,8 +1,6 @@
 const getIdString = (type) => {
     if (type == 'orders') {
         return 'number';
-    } else if (type == 'products') {
-        return 'product_id';
     } else {
         return 'id';
     }
