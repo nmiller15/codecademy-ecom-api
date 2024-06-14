@@ -1,12 +1,11 @@
 const getIdString = (type) => {
     if (type == 'orders') {
-        const str = 'number'
+        return 'number';
     } else if (type == 'products_orders' || type == 'products_carts') {
-        const str = 'product_id'
+        return 'product_id';
     } else {
-        const str = 'id'
+        return 'id';
     }
-    return str;
 }
 
 const modelSchema = {
