@@ -1,9 +1,16 @@
 const getIdString = (type) => {
-    return type == 'orders' ? 'number' : 'id';
+    if (type == 'orders') {
+        const str = 'number'
+    } else if (type == 'products_orders' || type == 'products_carts') {
+        const str = 'product_id'
+    } else {
+        const str = 'id'
+    }
+    return str;
 }
 
 const modelSchema = {
-    cart: 'id, username',
+    carts: 'id, username',
     orders: 'number, date_created, status, user_id',
     products: 'id, name, img_path, description',
     users: 'id, username, password, first_name, last_name, street_address, city, state, zip, date_created, isadmin',
