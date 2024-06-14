@@ -5,11 +5,12 @@ const PORT = '8080';
 const accountsRouter = require('./routers/accountsRouter');
 const usersRouter = require('./routers/usersRouter');
 const cartRouter = require('./routers/cartRouter');
+const productsRouter = require('./routers/productsRouter');
 
 app.use('/accounts', accountsRouter);
 app.use('/users', usersRouter);
 app.use('/cart', cartRouter);
-// app.use('/products', productsRouter);
+app.use('/products', productsRouter);
 // app.use('/orders', ordersRouter);
 
 
