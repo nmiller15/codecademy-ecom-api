@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 require('dotenv').config();
 const PORT = process.env.PORT;
+const query = require('./database/index');
 
 
 const accountsRouter = require('./routers/accountsRouter');
@@ -17,8 +18,9 @@ app.use('/products', productsRouter);
 app.use('/orders', ordersRouter);
 
 
-app.get('/test', (req, res) => {
-    res.json('test ok');
+app.get('/test', async (req, res) => {
+    const database = await query('SELECT NOW()');
+    res.json(`test ok - ${database.rows[0].now}`);
 })
 
 app.listen(PORT, () => {

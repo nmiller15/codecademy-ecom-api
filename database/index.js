@@ -1,10 +1,18 @@
 const pg = require('pg');
 const { Pool } = pg;
+require('dotenv').config();
 
-const pool = new Pool();
+const pool = new Pool({
+    user: process.env.DB_USER,
+    password: process.env.DB_PASS,
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    database: process.env.DB_CONN
+});
 
-const db = (text, params, callback) => {
-    return pool.query(text, params, callback);
+const query = async (text, params, callback) => {
+    const result = await pool.query(text, params, callback);
+    return result
 }
 
-module.exports = db;
+module.exports = query;
