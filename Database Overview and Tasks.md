@@ -17,52 +17,51 @@ This is not an exhaustive document of the complete database schema, but rather a
 
 ### `users` 
 
-- [ ] first_name  
-- [ ] last_name  
-- [ ] username [pk] 
-- [ ] password
-- [ ] isAdmin
+- [x] first_name  
+- [x] last_name  
+- [x] username [pk] 
+- [x] password
+- [x] isAdmin
 
 ### `products`  
 
-- [ ] name
-- [ ] img_path
-- [ ] id [pk]
-- [ ] description
+- [x] name
+- [x] img_path
+- [x] id [pk]
+- [x] description
 
 ### `carts`
 
-- [ ] id [pk]
-- [ ] username [fk]
-- [ ]  
+- [x] id [pk]
+- [x] username [fk]  
 
 ### `orders`
 
-- [ ] id
-- [ ] status
+- [x] id
+- [x] status
 
 ## Relationships
 
 ### `users`
 
-- [ ] one user, one cart
-- [ ] one user, many orders
+- [x] one user, one cart
+- [x] one user, many orders
 
 ### `products`
 
-- [ ] many products, many carts
-- [ ] many products, many orders
+- [x] many products, many carts
+- [x] many products, many orders
 
 ### `carts`
 
-- [ ] one cart, one user
-- [ ] many carts, many products
+- [x] one cart, one user
+- [x] many carts, many products
 
 ### `orders`
 
-- [ ] many orders, one user
-- [ ] many orders, many products
+- [x] many orders, one user
+- [x] many orders, many products
 
 ### Necessecary Tables
-- [ ] `products_carts`
-- [ ] `products_orders` 
+- [x] `products_carts`
+- [x] `products_orders` 
