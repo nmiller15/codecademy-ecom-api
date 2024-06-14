@@ -10,9 +10,8 @@ const pool = new Pool({
     database: process.env.DB_CONN
 });
 
-const query = async (text, params, callback) => {
-    const result = await pool.query(text, params, callback);
-    return result
+const query = (text, params, callback) => {
+    return pool.query(text, params, callback);
 }
 
 module.exports = query;
