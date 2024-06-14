@@ -197,17 +197,64 @@ describe('db', () => {
             
             assert.equal(expected, actual);
         })
-        // it('retrieves a product from the database with a matching id', async () => {
-        //     const type = 'products'
-        //     const id = '999'
-        //     const expected = '999'
+        it('retrieves a product from the database with a matching id', async () => {
+            const type = 'products'
+            const id = '999'
+            const expected = '999'
 
-        //     const response = await db.getInstanceById(type, id);
-        //     const actual = response.id;
+            const response = await db.getInstanceById(type, id);
+            const actual = response.id;
             
-        //     assert.equal(expected, actual);
-        // })
+            assert.equal(expected, actual);
+        })
+        it('retrieves a cart from the database with a matching id', async () => {
+            const type = 'carts'
+            const id = 999
+            const expected = 999
 
+            const response = await db.getInstanceById(type, id);
+            const actual = response.id;
+            
+            assert.equal(expected, actual);
+        })
+        it('retrieves an order from the database with a matching id', async () => {
+            const type = 'orders'
+            const id = 999
+            const expected = 999
+
+            const response = await db.getInstanceById(type, id);
+            const actual = response.number;
+            
+            assert.equal(expected, actual);
+        })
+        it('retrieves a products_carts row from the database with two a matching ids', async () => {
+            const type = 'products_carts'
+            const id = '999'
+            const secondaryId = 999
+            const productExpected = '999'
+            const cartExpected = 999
+
+            const response = await db.getInstanceById(type, id, secondaryId);
+            const productActual = response.product_id;
+            const cartActual = response.cart_id;
+            
+            assert.equal(productActual, productExpected);
+            assert.equal(cartActual, cartExpected);
+        })
+        it('retrieves a products_orders row from the database with two a matching ids', async () => {
+            const type = 'products_orders'
+            const id = '999'
+            const secondaryId = 999
+            const productExpected = '999'
+            const orderExpected = 999
+
+            const response = await db.getInstanceById(type, id, secondaryId);
+            const productActual = response.product_id;
+            const orderActual = response.order_number;
+            
+            assert.equal(productActual, productExpected);
+            assert.equal(orderActual, orderExpected);
+        })
     })
 
     describe('removeInstanceById', async () => {

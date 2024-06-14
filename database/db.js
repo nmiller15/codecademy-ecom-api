@@ -15,7 +15,6 @@ const getAllInstances = async (type) => {
 const getInstanceById = async (type, id, secondaryId) => {
     
     const text = `SELECT * FROM ${type} WHERE ${createWhereClause(type, id, secondaryId)}`
-
     const response = await query(text)
     const instance = response.rows[0];
     if (!instance) return {};
