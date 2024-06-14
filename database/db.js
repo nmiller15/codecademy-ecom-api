@@ -2,7 +2,8 @@ const query = require('./index');
 const {
     getIdString,
     modelSchema,
-    formatValues
+    formatValues,
+    createWhereClause
 } = require('./util')
 
 const getAllInstances = async (type) => {
@@ -11,8 +12,10 @@ const getAllInstances = async (type) => {
     return response;
 }
     
-const getInstanceById = async (type, id) => {
-    const text = `SELECT * FROM ${type} WHERE ${getIdString(type)} = ${id}`
+const getInstanceById = async (type, id, secondaryId) => {
+    
+    const text = `SELECT * FROM ${type} WHERE ${createWhereClause(type, id, secondaryId)}`
+
     const response = await query(text)
     const instance = response.rows[0];
     if (!instance) return {};
@@ -38,22 +41,13 @@ const updateInstanceById = async (type, id, model) => {
         }
     })
     const setString = setArr.join();
-    const text = `UPDATE table_name SET ${setString} WHERE ${getIdString(type)} = ${id}`
+    const text = `UPDATE table_name SET ${setString} WHERE ${createWhereClause(type, id)}`
     const response = await query(text);
     return response;
 }
 
 const removeInstanceById = async (type, id, secondaryId) => {
-    let text;
-    if (type == 'products_orders') {
-        text = `DELETE FROM ${type} WHERE product_id = '${id}' AND order_number = ${secondaryId}`
-    } else if (type == 'products_carts') {
-        text = `DELETE FROM ${type} WHERE product_id = '${id}' AND cart_id = ${secondaryId}`
-    } else if (type == 'products') {
-        text = `DELETE FROM ${type} WHERE id = '${id}'`
-    } else {
-        text = `DELETE FROM ${type} WHERE ${getIdString(type)} = ${id}`
-    }
+    const text = `DELETE FROM ${type} WHERE ${createWhereClause(type, id, secondaryId)}`
     const response = await query(text);
     return response;
 }
