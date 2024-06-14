@@ -2,29 +2,14 @@ const assert = require('assert');
 const db = require('./db');
 const query = require('./index.js');
 const util = require('./util.js');
-const formatDate = require('date-format');
-
-const date = new Date(2000, 1, 1, 1, 1, 1);
-const formattedDate = formatDate(date);
-const userModel = {
-    id: 999,
-    username: 'test_user_9999',
-    password: "ffffffffff",
-    first_name: 'test',
-    last_name: 'user',
-    street_address: '123 Anystreet',
-    city: 'Anytown',
-    state: 'USA',
-    zip: 99999,
-    date_created: formattedDate,
-    isAdmin: true
-}
-const productModel = {
-    id: 999,
-    name: 'Test Product',
-    img_path: '/test/path',
-    description: 'This is a description of a product.'
-}
+const {
+    cartModel,
+    orderModel,
+    userModel,
+    productModel,
+    productCartModel,
+    productOrderModel
+} = require('./mockModels.js');
 
 describe('query', () => {
     it('connects to the database', async () => {
@@ -40,7 +25,7 @@ describe('util', () => {
             const type = 'orders';
             const expected = 'number';
 
-            const actual = db.getIdString(type);
+            const actual = util.getIdString(type);
 
             assert.ok(expected == actual);
         })
@@ -56,6 +41,7 @@ describe('util', () => {
             assert.equal(expected, actual1);
             assert.equal(expected, actual2);
         })
+
 
     })
 
@@ -74,7 +60,7 @@ describe('util', () => {
         it('formats a products type into valid SQL values', () => {
             const type = 'products'
             const model = productModel;
-            const expected = "999, 'Test Product', '/test/path', 'This is a description of a product.'"
+            const expected = "'999', 'Test Product', '/test/path', 'This is a description of a product.'"
             
             const actual = util.formatValues(type, model);
 
@@ -85,6 +71,63 @@ describe('util', () => {
 
 describe('db', () => {
     
+    describe('addInstance', () => {
+        
+        it('adds a user to the database', async () => {
+            const type = 'users';
+            const model = userModel
+
+            const response = await db.addInstance(type, model);
+
+            assert.ok(response);
+        })
+
+        it('adds a product to the database', async () => {
+            const type = 'products';
+            const model = productModel
+            
+            const response = await db.addInstance(type, model);
+
+            assert.ok(response);
+        })
+
+        it('adds a cart to the database', async () => {
+            const type = 'carts';
+            const model = cartModel
+            
+            const response = await db.addInstance(type, model);
+
+            assert.ok(response);
+        })
+
+        it('adds an order to the databse', async () => {
+            const type = 'orders';
+            const model = orderModel;
+
+            const response = await db.addInstance(type, model);
+
+            assert.ok(response);
+        })
+
+        it('adds a products_carts row', async () => {
+            const type = 'products_carts'
+            const model = productCartModel;
+
+            const response = await db.addInstance(type, model);
+
+            assert.ok(response);
+        })
+
+        it('adds a products_orders row', async () => {
+            const type = 'products_orders'
+            const model = productOrderModel;
+
+            const response = await db.addInstance(type, model);
+
+            assert.ok(response);
+        })
+    })
+
     describe('getAllInstances', () => {
         it('can access the rows on the users table', async () => {
             const type = 'users';
@@ -102,23 +145,83 @@ describe('db', () => {
         })
     })
 
-    describe('getInstanceById', () => {
-        it('retrieves a user from the database with a matching id', () => {
+    describe('getInstanceById', async () => {
+        it('retrieves a user from the database with a matching id', async () => {
+            const type = 'users'
+            const id = 999
+            const expected = 999
+
+            const response = await db.getInstanceById(type, id);
+            const actual = response.id;
             
-
+            assert.equal(expected, actual);
         })
 
     })
 
-    describe('addInstance', () => {
-        
-        it('adds a user to the database', async () => {
-            const type = 'users';
-            const model = userModel
+    describe('removeInstanceById', async () => {
+        it('removes a product_order with two matching ids', async () => {
+            const type = 'products_orders'
+            const id = '999'
+            const secondaryId = 999
+            const expected = 'DELETE'
 
-            const response = await db.addInstance(type, model);
+            const response = await db.removeInstanceById(type, id, secondaryId);
+            const actual = response.command;
 
-            assert.ok(response);
+            assert.equal(expected, actual);
+        })
+        it('removes a product_cart with two matching ids', async () => {
+            const type = 'products_carts'
+            const id = '999'
+            const secondaryId = 999
+            const expected = 'DELETE'
+
+            const response = await db.removeInstanceById(type, id, secondaryId);
+            const actual = response.command;
+
+            assert.equal(expected, actual);
+        })
+        it('removes an order with a matching id', async () => {
+            const type = 'orders'
+            const id = 999
+            const expected = 'DELETE'
+
+            const response = await db.removeInstanceById(type, id);
+            const actual = response.command;
+
+            assert.equal(expected, actual);
+        })
+        it('removes a product with a matching id', async () => {
+            const type = 'products'
+            const id = '999'
+            const expected = 'DELETE'
+
+            const response = await db.removeInstanceById(type, id);
+            const actual = response.command;
+
+            assert.equal(expected, actual);
+        })
+        it('removes a cart with a matching id', async () => {
+            const type = 'carts'
+            const id = 999
+            const expected = 'DELETE'
+
+            const response = await db.removeInstanceById(type, id);
+            const actual = response.command;
+
+            assert.equal(expected, actual);
+        })
+        it('removes a user with a matching id', async () => {
+            const type = 'users'
+            const id = 999
+            const expected = 'DELETE'
+
+            const response = await db.removeInstanceById(type, id);
+            const actual = response.command;
+
+            assert.equal(expected, actual);
         })
     })
+
 })
