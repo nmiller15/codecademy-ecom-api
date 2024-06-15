@@ -1,6 +1,10 @@
 const express = require('express');
 const app = express();
-const PORT = '8080';
+require('dotenv').config();
+const PORT = process.env.PORT;
+const query = require('./database/index');
+const db = require('./database/db');
+
 
 const accountsRouter = require('./routers/accountsRouter');
 const usersRouter = require('./routers/usersRouter');
@@ -16,7 +20,7 @@ app.use('/orders', ordersRouter);
 
 
 app.get('/test', (req, res) => {
-    res.json('test ok');
+    res.json('test ok')
 })
 
 app.listen(PORT, () => {
