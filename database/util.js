@@ -7,7 +7,7 @@ const getIdString = (type) => {
 }
 
 const modelSchema = {
-    carts: 'id, username',
+    carts: 'id, user_id',
     orders: 'number, date_created, status, user_id',
     products: 'id, name, img_path, description',
     users: 'id, username, password, first_name, last_name, street_address, city, state, zip, date_created, isadmin',

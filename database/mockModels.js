@@ -5,7 +5,7 @@ const formattedDate = formatDate(date);
 
 const cartModel = {
     id: 999,
-    username: 'test_user_9999'
+    user_id: 999
 }
 
 const orderModel = {

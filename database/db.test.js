@@ -213,9 +213,19 @@ describe('db', () => {
             const expected = 999
 
             const response = await db.getInstanceById(type, id);
-            const actual = response.id;
+            const actual = response[0].cart_id;
             
             assert.equal(expected, actual);
+        })
+        it('retrieves a cart\'s contents from the database with a matching id', async () => {
+            const type = 'carts'
+            const id = 999
+            const expected = '999'
+
+            const response = await db.getInstanceById(type, id);
+            const actual = response[0].product_id;
+
+            assert.equal(actual, expected);
         })
         it('retrieves an order from the database with a matching id', async () => {
             const type = 'orders'
@@ -223,8 +233,18 @@ describe('db', () => {
             const expected = 999
 
             const response = await db.getInstanceById(type, id);
-            const actual = response.number;
+            const actual = response[0].order_number;
             
+            assert.equal(expected, actual);
+        })
+        it('retrieves an order\'s contents from the database with a matching id', async () => {
+            const type = 'orders'
+            const id = 999
+            const expected = '999'
+
+            const response = await db.getInstanceById(type, id);
+            const actual = response[0].product_id;
+
             assert.equal(expected, actual);
         })
         it('retrieves a products_carts row from the database with two a matching ids', async () => {
