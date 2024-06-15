@@ -2,8 +2,6 @@ const express = require('express');
 const app = express();
 require('dotenv').config();
 const PORT = process.env.PORT;
-const query = require('./database/index');
-const db = require('./database/db');
 
 
 const accountsRouter = require('./routers/accountsRouter');
