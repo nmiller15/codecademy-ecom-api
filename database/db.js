@@ -13,9 +13,14 @@ const getAllInstances = async (type) => {
 }
     
 const getInstanceById = async (type, id, secondaryId) => {
-    
-    const text = `SELECT * FROM ${type} WHERE ${createWhereClause(type, id, secondaryId)}`
+    let text;
+    if (type == 'carts') {
+        text = `SELECT * FROM products_carts JOIN products ON products.id = products_carts.product_id JOIN carts ON carts.id = products_carts.cart_id WHERE carts.id = ${id};`
+    } else {
+        text = `SELECT * FROM ${type} WHERE ${createWhereClause(type, id, secondaryId)}`
+    }
     const response = await query(text)
+    // if (type == 'carts') return response.rows;
     const instance = response.rows[0];
     if (!instance) return {};
     return instance;

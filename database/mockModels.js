@@ -26,7 +26,7 @@ const userModel = {
     state: 'USA',
     zip: 99999,
     date_created: formattedDate,
-    isAdmin: true
+    isadmin: true
 }
 
 const productModel = {
