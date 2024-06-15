@@ -20,28 +20,7 @@ app.use('/orders', ordersRouter);
 
 
 app.get('/test', async (req, res) => {
-    const date = new Date();
-    const database = await query('SELECT NOW()');
-    const addUserInstance = await db.addInstance('users', {
-        id: 999,
-        username: 'test_user_9999',
-        password: "ffffffffff",
-        first_name: 'test',
-        last_name: 'user',
-        street_address: '123 Anystreet',
-        city: 'Anytown',
-        state: 'USA',
-        zip: 99999,
-        date_created: date.toString(),
-        isAdmin: true
-    })
-    const allInstances = await db.getAllInstances('products');
-    res.json({
-        test: 'test ok',
-        databaseTime: `${database.rows[0].now}`,
-        dbTestAllInstances: `${allInstances.rows}`,
-        dbTestInstanceById: `${addUserInstance.rows}`
-    });
+    res.json('test ok')
 })
 
 app.listen(PORT, () => {
