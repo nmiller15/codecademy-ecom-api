@@ -6,6 +6,7 @@ const {
     cartModel,
     orderModel,
     userModel,
+    incompleteUserModel,
     productModel,
     productCartModel,
     productOrderModel
@@ -65,6 +66,20 @@ describe('util', () => {
             const actual = util.formatValues(type, model);
 
             assert.equal(expected, actual);
+        })
+    })
+
+    describe('formatColumns', () => {
+
+        it('formats a users type into valid SQL columns', () => {
+            const type = 'users'
+            const model = incompleteUserModel
+            const expected = "username, password, first_name, street_address, city, state, zip, date_created"
+
+            const actual = util.formatColumns(type, model);
+
+            assert.equal(actual, expected);
+            
         })
     })
 
