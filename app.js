@@ -19,7 +19,7 @@ app.use('/products', productsRouter);
 app.use('/orders', ordersRouter);
 
 
-app.get('/test', async (req, res) => {
+app.get('/test', (req, res) => {
     res.json('test ok')
 })
 
