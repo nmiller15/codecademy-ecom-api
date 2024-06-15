@@ -3,6 +3,7 @@ const {
     getIdString,
     modelSchema,
     formatValues,
+    formatColumns,
     createWhereClause
 } = require('./util')
 
@@ -29,7 +30,7 @@ const getInstanceById = async (type, id, secondaryId) => {
 }
 
 const addInstance = async (type, model) => {
-    const schema = modelSchema[type];
+    const schema = formatColumns(type, model);
     const values = formatValues(type, model);
     const text = `INSERT INTO ${type} (${schema}) VALUES (${values})`;
     return response = await query(text);

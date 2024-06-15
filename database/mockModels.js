@@ -54,7 +54,7 @@ const productCartModel = {
 
 const productOrderModel = {
     product_id: '999',
-    order_id: 999
+    order_number: 999
 }
 
 module.exports = {

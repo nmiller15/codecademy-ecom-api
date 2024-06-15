@@ -79,7 +79,6 @@ describe('util', () => {
             const actual = util.formatColumns(type, model);
 
             assert.equal(actual, expected);
-            
         })
     })
 
