@@ -257,6 +257,35 @@ describe('db', () => {
         })
     })
 
+    describe('updateInstanceById', () => {
+        it('edits a user record', async () => {
+            const type = 'users'
+            const id = 999
+            const model = userModel
+            const expected = 'edited';
+
+            model.first_name = 'edited'
+
+            const response = await db.updateInstanceById(type, id, model);
+            const actual = response.first_name;
+    
+            assert.equal(actual, expected);
+        })
+        it('edits a product record', async () => {
+            const type = 'products'
+            const id = '999'
+            const model = productModel
+            const expected = 'edited';
+
+            model.name = 'edited'
+
+            const response = await db.updateInstanceById(type, id, model);
+            const actual = response.name;
+    
+            assert.equal(actual, expected);
+        })
+    })
+
     describe('removeInstanceById', async () => {
         it('removes a product_order with two matching ids', async () => {
             const type = 'products_orders'

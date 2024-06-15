@@ -32,17 +32,21 @@ const updateInstanceById = async (type, id, model) => {
     const schemaArr = modelSchema[type].split(', ');
     let setArr = []
     schemaArr.forEach((col, index) => {
-        let value = model.value
+        let value = model[col];
+        if (typeof value == 'string') value = `'${value}'`
         if (index == schemaArr.length - 1) {
             setArr.push(`${col} = ${value}`)
         } else {
-            setArr.push(`${col} = ${value}, `)
+            setArr.push(`${col} = ${value},`)
         }
     })
-    const setString = setArr.join();
-    const text = `UPDATE table_name SET ${setString} WHERE ${createWhereClause(type, id)}`
+
+    const setString = setArr.join(' ')
+    const text = `UPDATE ${type} SET ${setString} WHERE ${createWhereClause(type, id)}`
     const response = await query(text);
-    return response;
+    const instance = getInstanceById(type, id);
+    if (!instance) return {};
+    return instance;
 }
 
 const removeInstanceById = async (type, id, secondaryId) => {
