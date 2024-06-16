@@ -1,3 +1,4 @@
+const { response } = require('express');
 const query = require('./index');
 const {
     getIdString,
@@ -29,11 +30,22 @@ const getInstanceById = async (type, id, secondaryId) => {
     return instance;
 }
 
+const getPassword = async (username) => {
+    const text = `SELECT password FROM users WHERE username = '${username}';`
+    try {
+        const response = await query(text);
+        if (!response.rows[0].password) return false
+        return response.rows[0].password;
+    } catch (err) {
+        return false;
+    }
+}
+
 const addInstance = async (type, model) => {
     const schema = formatColumns(type, model);
     const values = formatValues(type, model);
     const text = `INSERT INTO ${type} (${schema}) VALUES (${values})`;
-    return response = await query(text);
+    return await query(text);
 }
 
 const updateInstanceById = async (type, id, model) => {
@@ -66,6 +78,7 @@ const removeInstanceById = async (type, id, secondaryId) => {
 module.exports = {
     getInstanceById,
     getAllInstances,
+    getPassword,
     addInstance,
     updateInstanceById,
     removeInstanceById

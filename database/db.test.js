@@ -291,6 +291,25 @@ describe('db', () => {
         })
     })
 
+    describe('getPassword', () => {
+        it('returns false when no user is found', async () => {
+            const username = 'thisisnotauser';
+            const expected = false;
+
+            const actual = await db.getPassword(username);
+
+            assert.equal(actual, expected);
+        })
+        it('returns the password of a user with a matching username', async () => {
+            const username = 'test_user_9999';
+            const expected = "ffffffffff";
+
+            const actual = await db.getPassword(username);
+
+            assert.equal(actual, expected);
+        })
+    })
+
     describe('updateInstanceById', () => {
         it('edits a user record', async () => {
             const type = 'users'
