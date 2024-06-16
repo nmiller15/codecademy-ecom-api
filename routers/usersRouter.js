@@ -18,14 +18,26 @@ const hashPassword = async (req, res, next) => {
     })
 }
 
-const comparePassword = async (req, res, next) => {
+// Compare password and attach isAuthenticated and user to req.session
+const authorize = async (req, res, next) => {
+    console.log(req.body);
     const username = req.body.username;
     const password = req.body.password;
-    const hashPassword = await db.getPassword(username);
 
-    const matches = await bcrypt.compareSync(password, hashPassword);
+    const response = await db.getPassword(username);
+    const hashPassword = response.password;
+    const userId = response.id;
 
 
+    const matches = await bcrypt.compare(password, hashPassword);
+    if (matches) {
+        req.session.isAuthenticated = true;
+        const user = await db.getInstanceById(type, userId);
+        req.session.user = user;
+    } else {
+        res.status(401).json({ "msg": "Incorrect Password" })
+    }
+    next();
 }
 
 
@@ -35,7 +47,6 @@ usersRouter.get('/test', (req, res)=> {
     res.json('users - test ok');
 })
 
-// ! ADD SALT AND HASH FOR PASSWORD!!!
 usersRouter.post('/register', upload.none(), dateCreated, hashPassword, async (req, res) => {
     const model = req.body;
     model.date_created = req.dateCreated;
@@ -46,6 +57,12 @@ usersRouter.post('/register', upload.none(), dateCreated, hashPassword, async (r
     const added = await db.addInstance(type, model);
     if (!added ) return res.status(501).json('Not added to the database');
     res.status(201).json(model);
+})
+
+usersRouter.post('/login', upload.none(), authorize, async (req, res) => {
+    const user = req.session.user
+
+    res.status(200).json(user);
 })
 
 module.exports = usersRouter;
