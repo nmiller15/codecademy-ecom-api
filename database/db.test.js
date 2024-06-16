@@ -1,6 +1,6 @@
 const assert = require('assert');
 const db = require('./db');
-const query = require('./index.js');
+const { query } = require('./index.js');
 const util = require('./util.js');
 const {
     cartModel,

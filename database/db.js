@@ -1,5 +1,5 @@
 const { response } = require('express');
-const query = require('./index');
+const { query } = require('./index');
 const {
     getIdString,
     modelSchema,
