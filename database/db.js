@@ -31,11 +31,14 @@ const getInstanceById = async (type, id, secondaryId) => {
 }
 
 const getPassword = async (username) => {
-    const text = `SELECT password FROM users WHERE username = '${username}';`
+    const text = `SELECT id, password FROM users WHERE username = '${username}';`
     try {
         const response = await query(text);
         if (!response.rows[0].password) return false
-        return response.rows[0].password;
+        return {
+            id: response.rows[0].id,
+            password: response.rows[0].password
+        }
     } catch (err) {
         return false;
     }

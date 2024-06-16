@@ -304,7 +304,17 @@ describe('db', () => {
             const username = 'test_user_9999';
             const expected = "ffffffffff";
 
-            const actual = await db.getPassword(username);
+            const response = await db.getPassword(username);
+            const actual = response.password;
+
+            assert.equal(actual, expected);
+        })
+        it('returns the id of a user with a matching username', async () => {
+            const username = 'test_user_9999';
+            const expected = 999;
+
+            const response = await db.getPassword(username);
+            const actual = response.id;
 
             assert.equal(actual, expected);
         })
