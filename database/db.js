@@ -15,10 +15,10 @@ const getAllInstances = async (type) => {
     return response;
 }
     
-const getInstanceById = async (type, id, secondaryId) => {
+const getInstanceById = async (type, id, secondaryId, ) => {
     let text;
     if (type == 'carts') {
-        text = `SELECT * FROM carts LEFT JOIN products_carts ON products_carts.cart_id = carts.id LEFT JOIN products ON products.id = products_carts.product_id WHERE carts.user_id = ${id};`
+        text = `SELECT carts.id, user_id, product_id, name AS product_name, img_path, description FROM carts LEFT JOIN products_carts ON products_carts.cart_id = carts.id LEFT JOIN products ON products_carts.product_id = products.id WHERE user_id = ${id};;`
     } else if (type == 'orders') {
         text = `SELECT * FROM products_orders JOIN products ON products.id = products_orders.product_id JOIN orders ON orders.number = products_orders.order_number WHERE orders.number = ${id};`
     } else {
