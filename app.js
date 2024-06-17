@@ -9,7 +9,7 @@ const PORT = process.env.PORT;
 const bodyParser = require('body-parser');
 
 // Middleware
-// app.use(bodyParser.json());
+app.use(bodyParser.json());
 app.use(session({
     store: new (require('connect-pg-simple')(session))({
         // Insert connect-pg-simple options here

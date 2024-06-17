@@ -87,7 +87,7 @@ describe('util', () => {
             const type = 'products_orders'
             const id = '999'
             const secondaryId = 999
-            const expected = "product_id = '999' AND order_number = 999";
+            const expected = "order_number = '999' AND id = 999";
 
             const actual = util.createWhereClause(type, id, secondaryId)
 
@@ -97,7 +97,7 @@ describe('util', () => {
             const type = 'products_carts'
             const id = '999'
             const secondaryId = 999
-            const expected = "product_id = '999' AND cart_id = 999";
+            const expected = "cart_id = '999' AND id = 999";
 
             const actual = util.createWhereClause(type, id, secondaryId)
 
@@ -227,7 +227,7 @@ describe('db', () => {
             const expected = 999
 
             const response = await db.getInstanceById(type, id);
-            const actual = response[0].cart_id;
+            const actual = response[0].id;
             
             assert.equal(expected, actual);
         })
@@ -260,34 +260,6 @@ describe('db', () => {
             const actual = response[0].product_id;
 
             assert.equal(expected, actual);
-        })
-        it('retrieves a products_carts row from the database with two a matching ids', async () => {
-            const type = 'products_carts'
-            const id = '999'
-            const secondaryId = 999
-            const productExpected = '999'
-            const cartExpected = 999
-
-            const response = await db.getInstanceById(type, id, secondaryId);
-            const productActual = response.product_id;
-            const cartActual = response.cart_id;
-            
-            assert.equal(productActual, productExpected);
-            assert.equal(cartActual, cartExpected);
-        })
-        it('retrieves a products_orders row from the database with two a matching ids', async () => {
-            const type = 'products_orders'
-            const id = '999'
-            const secondaryId = 999
-            const productExpected = '999'
-            const orderExpected = 999
-
-            const response = await db.getInstanceById(type, id, secondaryId);
-            const productActual = response.product_id;
-            const orderActual = response.order_number;
-            
-            assert.equal(productActual, productExpected);
-            assert.equal(orderActual, orderExpected);
         })
     })
 
@@ -350,10 +322,10 @@ describe('db', () => {
     })
 
     describe('removeInstanceById', async () => {
-        it('removes a product_order with two matching ids', async () => {
+        it('removes a product_order with a matching id', async () => {
             const type = 'products_orders'
-            const id = '999'
-            const secondaryId = 999
+            const id = 999                  // order_number
+            const secondaryId = 999         // listing_id
             const expected = 'DELETE'
 
             const response = await db.removeInstanceById(type, id, secondaryId);
@@ -361,7 +333,7 @@ describe('db', () => {
 
             assert.equal(expected, actual);
         })
-        it('removes a product_cart with two matching ids', async () => {
+        it('removes a product_cart with a matching id', async () => {
             const type = 'products_carts'
             const id = '999'
             const secondaryId = 999

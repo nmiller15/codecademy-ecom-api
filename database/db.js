@@ -15,10 +15,10 @@ const getAllInstances = async (type) => {
     return response;
 }
     
-const getInstanceById = async (type, id, secondaryId) => {
+const getInstanceById = async (type, id, secondaryId, ) => {
     let text;
     if (type == 'carts') {
-        text = `SELECT * FROM products_carts JOIN products ON products.id = products_carts.product_id JOIN carts ON carts.id = products_carts.cart_id WHERE carts.id = ${id};`
+        text = `SELECT products_carts.id AS listing_id, carts.id, user_id, product_id, name AS product_name, img_path, description FROM carts LEFT JOIN products_carts ON products_carts.cart_id = carts.id LEFT JOIN products ON products_carts.product_id = products.id WHERE user_id = ${id};;`
     } else if (type == 'orders') {
         text = `SELECT * FROM products_orders JOIN products ON products.id = products_orders.product_id JOIN orders ON orders.number = products_orders.order_number WHERE orders.number = ${id};`
     } else {
@@ -42,6 +42,17 @@ const getPassword = async (username) => {
         }
     } catch (err) {
         return false;
+    }
+}
+
+const getUserId = async (username) => {
+    const text = `SELECT id FROM users WHERE username = '${username}';`
+    try {
+        const response = await query(text);
+        if (!response.rows[0].id) throw new Error('No user found.')
+        return response.rows[0].id;
+    } catch (err) {
+        return err;
     }
 }
 
@@ -70,6 +81,7 @@ module.exports = {
     getInstanceById,
     getAllInstances,
     getPassword,
+    getUserId,
     addInstance,
     updateInstanceById,
     removeInstanceById
