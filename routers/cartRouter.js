@@ -13,14 +13,14 @@ const getCartFromId = async (req, res, next) => {
     next();
 }
 
-// Mounting middleware
-cartRouter.use('/:id', userAuth.checkUserId, getCartFromId );
-
 const type = 'carts';
 
 cartRouter.get('/test', (req, res) => {
     res.json('cart - test ok');
 });
+
+// Mounting middleware
+cartRouter.use('/:id', userAuth.checkUserId, getCartFromId);
 
 // Get the contents of a cart using the user id
 cartRouter.get('/:id', async (req, res) => {
@@ -29,14 +29,37 @@ cartRouter.get('/:id', async (req, res) => {
 
 // Add a product to the cart
 cartRouter.post('/:id', async (req, res) => {
-    const productId = req.body.product;
-    const model = {
-        cart_id: req.cartId,
-        product_id: productId
+    try {
+        const productId = req.body.product;
+        const model = {
+            cart_id: req.cartId,
+            product_id: productId
+        }
+        const response = await db.addInstance('products_carts', model);
+        if(!response) return res.status(500).json('Could not add to cart.');
+    
+        // Return the product object that was added to the cart
+        const updatedCart = await db.getInstanceById(type, req.params.id);
+        const newItem = updatedCart[updatedCart.length - 1];
+    
+        res.status(200).json({'msg': 'Product added to cart', 'product': newItem });
+    } catch (error) {
+        res.status(500).json(error);
     }
-    const response = db.addInstance('products_carts', model);
-    if(!response) return res.status(500).json('Could not add to cart.');
-    res.status(200).json({'msg': 'Product added to cart', 'response': response});
+})
+
+// Remove a product from the cart
+cartRouter.delete('/:id', async (req, res) => {
+    try {
+        const id = req.cartId;
+        const secondaryId = req.body.listing_id;
+    
+        const response = await db.removeInstanceById('products_carts', id, secondaryId);
+        if(!response) return res.status(500).json('Could not remove from cart.');
+        res.status(200).json({'msg': 'Product removed from cart.', 'response': response});
+    } catch (error) {
+        res.status(500).json(error.message);
+    }
 })
 
 module.exports = cartRouter;

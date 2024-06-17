@@ -48,11 +48,13 @@ const productModel = {
 }
 
 const productCartModel = {
+    id: 999,
     product_id: '999',
     cart_id: 999
 }
 
 const productOrderModel = {
+    id: 999,
     product_id: '999',
     order_number: 999
 }

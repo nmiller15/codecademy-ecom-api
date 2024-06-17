@@ -39,9 +39,9 @@ const formatColumns = (type, model) => {
 
 const createWhereClause = (type, id, secondaryId) => {
     if (type == 'products_orders') {
-        return `product_id = '${id}' AND order_number = ${secondaryId}`
+        return `order_number = '${id}' AND id = ${secondaryId}`
     } else if (type == 'products_carts') {
-        return `product_id = '${id}' AND cart_id = ${secondaryId}`
+        return `cart_id = '${id}' AND id = ${secondaryId}`
     } else if (type == 'products') {
         return `id = '${id}'`
     } else {
