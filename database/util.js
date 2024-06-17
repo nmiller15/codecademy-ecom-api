@@ -66,7 +66,6 @@ const createSetStatement = (type, model) => {
             setStatement = `${setStatement}${key} = ${value}, `
         }
     })
-    console.log(setStatement);
     return setStatement;
 }
 

@@ -18,7 +18,7 @@ const getAllInstances = async (type) => {
 const getInstanceById = async (type, id, secondaryId) => {
     let text;
     if (type == 'carts') {
-        text = `SELECT * FROM products_carts JOIN products ON products.id = products_carts.product_id JOIN carts ON carts.id = products_carts.cart_id WHERE carts.user_id = ${id};`
+        text = `SELECT * FROM carts LEFT JOIN products_carts ON products_carts.cart_id = carts.id LEFT JOIN products ON products.id = products_carts.product_id WHERE carts.user_id = ${id};`
     } else if (type == 'orders') {
         text = `SELECT * FROM products_orders JOIN products ON products.id = products_orders.product_id JOIN orders ON orders.number = products_orders.order_number WHERE orders.number = ${id};`
     } else {
