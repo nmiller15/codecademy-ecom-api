@@ -62,10 +62,8 @@ const createSetStatement = (type, model) => {
         if (typeof value == 'string') value = `'${value}'`;
         if (index == keys.length - 1) {
             setStatement = `${setStatement}${key} = ${value}`
-            console.log(setStatement)
         } else {
             setStatement = `${setStatement}${key} = ${value}, `
-            console.log(setStatement)
         }
     })
     console.log(setStatement);
