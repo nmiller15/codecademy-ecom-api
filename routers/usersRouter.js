@@ -3,42 +3,8 @@ const usersRouter = express.Router();
 const db = require('../database/db.js');
 const multer = require('multer');
 const upload = multer();
-const dateCreated = require('../middleware/dateCreated');
-const bcrypt = require('bcrypt');
-const saltRounds = 10;
-
-// Password Hashing and Comparison
-
-const hashPassword = async (req, res, next) => {
-    const password = req.body.password;
-    bcrypt.hash(password, saltRounds, function(err, hash) {
-        if(err) console.error(err);
-        req.body.password = hash;
-        next(); 
-    })
-}
-
-// Compare password and attach isAuthenticated and user to req.session
-const authorize = async (req, res, next) => {
-    console.log(req.body);
-    const username = req.body.username;
-    const password = req.body.password;
-
-    const response = await db.getPassword(username);
-    const hashPassword = response.password;
-    const userId = response.id;
-
-
-    const matches = await bcrypt.compare(password, hashPassword);
-    if (matches) {
-        req.session.isAuthenticated = true;
-        const user = await db.getInstanceById(type, userId);
-        req.session.user = user;
-    } else {
-        res.status(401).json({ "msg": "Incorrect Password" })
-    }
-    next();
-}
+const dateCreated = require('../util/dateCreated');
+const userAuth = require('../util/userAuth.js');
 
 
 const type = 'users';
@@ -47,7 +13,9 @@ usersRouter.get('/test', (req, res)=> {
     res.json('users - test ok');
 })
 
-usersRouter.post('/register', upload.none(), dateCreated, hashPassword, async (req, res) => {
+
+// Register and new user and add to the database
+usersRouter.post('/register', upload.none(), dateCreated, userAuth.hashPassword, async (req, res) => {
     const model = req.body;
     model.date_created = req.dateCreated;
     
@@ -59,10 +27,19 @@ usersRouter.post('/register', upload.none(), dateCreated, hashPassword, async (r
     res.status(201).json(model);
 })
 
-usersRouter.post('/login', upload.none(), authorize, async (req, res) => {
+// Login a new user, send the user object in the response
+usersRouter.post('/login', upload.none(), userAuth.authorize, async (req, res) => {
     const user = req.session.user
-
     res.status(200).json(user);
+})
+
+// Get all users -- admin only
+usersRouter.get('/', async (req, res) => {
+    console.log(req.session);
+    if (!req.session.user.isadmin) return res.status(401).json({ "msg": "You are unauthorized to view this information."});
+    const response = await db.getAllInstances(type); 
+    if(!response) return res.status(500).json('Issue retrieving records');
+    res.status(200).json(response.rows);
 })
 
 module.exports = usersRouter;

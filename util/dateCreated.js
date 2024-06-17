@@ -1,8 +1,9 @@
 const formatDate = require('date-format');
 
-const dateCreated = () => {
+const dateCreated = (req, res, next) => {
     const date = new Date();
-    return formatDate(date);
+    req.dateCreated = formatDate(date);
+    next();
 }
 
 module.exports = dateCreated;
