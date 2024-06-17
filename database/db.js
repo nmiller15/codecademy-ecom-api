@@ -73,7 +73,6 @@ const updateInstanceById = async (type, id, model) => {
 
 const removeInstanceById = async (type, id, secondaryId) => {
     const text = `DELETE FROM ${type} WHERE ${createWhereClause(type, id, secondaryId)}`
-    console.log(text);
     const response = await query(text);
     return response;
 }
