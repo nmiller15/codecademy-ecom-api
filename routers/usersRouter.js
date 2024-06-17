@@ -35,11 +35,21 @@ usersRouter.post('/login', upload.none(), userAuth.authorize, async (req, res) =
 
 // Get all users -- admin only
 usersRouter.get('/', async (req, res) => {
-    console.log(req.session);
     if (!req.session.user.isadmin) return res.status(401).json({ "msg": "You are unauthorized to view this information."});
     const response = await db.getAllInstances(type); 
     if(!response) return res.status(500).json('Issue retrieving records');
     res.status(200).json(response.rows);
+})
+
+// Get single user by id
+usersRouter.get('/:id', async (req, res) => {
+    if(!req.session.isAuthenticated) return res.status(401).json({"msg": "You must be logged in to view a profile."});
+    const id = req.params.id;
+    const sessionUserId = req.session.user.id;
+    if (sessionUserId != id && !req.session.user.isadmin) return res.status(401).json({"msg": "You can only view your own account."})
+    const response = await db.getInstanceById(type, id);
+    if (!response) return res.status(500).json('Issue retrieveing records');
+    res.status(200).json(response);
 })
 
 module.exports = usersRouter;
