@@ -14,6 +14,10 @@ usersRouter.get('/test', (req, res)=> {
 })
 
 
+// Checking ID middleware
+usersRouter.use('/:id', userAuth.checkUserId);
+
+
 // Register and new user and add to the database
 usersRouter.post('/register', upload.none(), dateCreated, userAuth.hashPassword, async (req, res) => {
     const model = req.body;
@@ -43,13 +47,24 @@ usersRouter.get('/', async (req, res) => {
 
 // Get single user by id
 usersRouter.get('/:id', async (req, res) => {
-    if(!req.session.isAuthenticated) return res.status(401).json({"msg": "You must be logged in to view a profile."});
     const id = req.params.id;
-    const sessionUserId = req.session.user.id;
-    if (sessionUserId != id && !req.session.user.isadmin) return res.status(401).json({"msg": "You can only view your own account."})
     const response = await db.getInstanceById(type, id);
-    if (!response) return res.status(500).json('Issue retrieveing records');
+    if (!response) return res.status(500).json('Issue retrieving records');
     res.status(200).json(response);
+})
+
+// Edit a user account
+usersRouter.put('/:id', upload.none(), async (req, res) => {
+    try {
+        const id = req.params.id;
+        const model = req.body; 
+        if (model.isadmin !== req.session.user.isadmin) return res.status(401).json("Unable to change admin status.");
+        const response = await db.updateInstanceById(type, id, model)
+        if (!response) return res.status(500).json('Issue retrieving records');
+        res.status(200).json({"msg": "Updated successfully", "user": response});
+    } catch (err) {
+        res.status(400).json(err.message);
+    }
 })
 
 module.exports = usersRouter;
