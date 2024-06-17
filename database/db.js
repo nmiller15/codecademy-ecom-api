@@ -1,8 +1,10 @@
-const query = require('./index');
+const { response } = require('express');
+const { query } = require('./index');
 const {
     getIdString,
     modelSchema,
     formatValues,
+    formatColumns,
     createWhereClause
 } = require('./util')
 
@@ -28,11 +30,25 @@ const getInstanceById = async (type, id, secondaryId) => {
     return instance;
 }
 
+const getPassword = async (username) => {
+    const text = `SELECT id, password FROM users WHERE username = '${username}';`
+    try {
+        const response = await query(text);
+        if (!response.rows[0].password) return false
+        return {
+            id: response.rows[0].id,
+            password: response.rows[0].password
+        }
+    } catch (err) {
+        return false;
+    }
+}
+
 const addInstance = async (type, model) => {
-    const schema = modelSchema[type];
+    const schema = formatColumns(type, model);
     const values = formatValues(type, model);
     const text = `INSERT INTO ${type} (${schema}) VALUES (${values})`;
-    return response = await query(text);
+    return await query(text);
 }
 
 const updateInstanceById = async (type, id, model) => {
@@ -65,6 +81,7 @@ const removeInstanceById = async (type, id, secondaryId) => {
 module.exports = {
     getInstanceById,
     getAllInstances,
+    getPassword,
     addInstance,
     updateInstanceById,
     removeInstanceById

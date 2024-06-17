@@ -1,11 +1,12 @@
 const assert = require('assert');
 const db = require('./db');
-const query = require('./index.js');
+const { query } = require('./index.js');
 const util = require('./util.js');
 const {
     cartModel,
     orderModel,
     userModel,
+    incompleteUserModel,
     productModel,
     productCartModel,
     productOrderModel
@@ -65,6 +66,19 @@ describe('util', () => {
             const actual = util.formatValues(type, model);
 
             assert.equal(expected, actual);
+        })
+    })
+
+    describe('formatColumns', () => {
+
+        it('formats a users type into valid SQL columns', () => {
+            const type = 'users'
+            const model = incompleteUserModel
+            const expected = "username, password, first_name, street_address, city, state, zip, date_created"
+
+            const actual = util.formatColumns(type, model);
+
+            assert.equal(actual, expected);
         })
     })
 
@@ -274,6 +288,35 @@ describe('db', () => {
             
             assert.equal(productActual, productExpected);
             assert.equal(orderActual, orderExpected);
+        })
+    })
+
+    describe('getPassword', () => {
+        it('returns false when no user is found', async () => {
+            const username = 'thisisnotauser';
+            const expected = false;
+
+            const actual = await db.getPassword(username);
+
+            assert.equal(actual, expected);
+        })
+        it('returns the password of a user with a matching username', async () => {
+            const username = 'test_user_9999';
+            const expected = "ffffffffff";
+
+            const response = await db.getPassword(username);
+            const actual = response.password;
+
+            assert.equal(actual, expected);
+        })
+        it('returns the id of a user with a matching username', async () => {
+            const username = 'test_user_9999';
+            const expected = 999;
+
+            const response = await db.getPassword(username);
+            const actual = response.id;
+
+            assert.equal(actual, expected);
         })
     })
 

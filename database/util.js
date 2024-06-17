@@ -29,6 +29,14 @@ const formatValues = (type, model) => {
     return values.join(', ');
 }
 
+const formatColumns = (type, model) => {
+    if (!modelSchema.hasOwnProperty(type)) {
+        throw new Error('Invalid Type');
+    }
+    const columns = Object.keys(model);
+    return columns.join(', ')
+}
+
 const createWhereClause = (type, id, secondaryId) => {
     if (type == 'products_orders') {
         return `product_id = '${id}' AND order_number = ${secondaryId}`
@@ -45,5 +53,6 @@ module.exports = {
     getIdString,
     modelSchema,
     formatValues,
+    formatColumns,
     createWhereClause
 }

@@ -29,6 +29,17 @@ const userModel = {
     isadmin: true
 }
 
+const incompleteUserModel = {
+    username: 'test_user_noid',
+    password: 'fffffffff',
+    first_name: 'test',
+    street_address: '123 Anystreet',
+    city: 'Anytown',
+    state: 'USA',
+    zip: 99999,
+    date_created: formattedDate,
+}
+
 const productModel = {
     id: '999',
     name: 'Test Product',
@@ -43,13 +54,14 @@ const productCartModel = {
 
 const productOrderModel = {
     product_id: '999',
-    order_id: 999
+    order_number: 999
 }
 
 module.exports = {
     cartModel,
     orderModel,
     userModel,
+    incompleteUserModel,
     productModel,
     productCartModel,
     productOrderModel
