@@ -57,13 +57,26 @@ usersRouter.get('/:id', async (req, res) => {
 usersRouter.put('/:id', upload.none(), async (req, res) => {
     try {
         const id = req.params.id;
-        const model = req.body; 
+        const model = req.body;
+        // Do not allow users to change admin status, this must be handled administratively
         if (model.isadmin !== undefined && model.isadmin !== req.session.user.isadmin) return res.status(401).json("Unable to change admin status");
         const response = await db.updateInstanceById(type, id, model)
         if (!response) return res.status(500).json('Issue retrieving records');
         res.status(200).json({"msg": "Updated successfully", "user": response});
     } catch (err) {
         res.status(400).json(err.message);
+    }
+})
+
+// Delete a user account
+usersRouter.delete('/:id', async (req, res) => {
+    try {
+        const id = req.params.id;
+        const response = await db.removeInstanceById(type, id);
+        if (!response) return res.status(500).json('Issue removing record.')
+        res.status(200).json({"msg": "Removed successfully", "response": response});
+    } catch (err) {
+        res.status(400).json(err.message)
     }
 })
 
