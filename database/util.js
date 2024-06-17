@@ -49,10 +49,34 @@ const createWhereClause = (type, id, secondaryId) => {
     }
 }
 
+// Return a string that is valid SQL
+const createSetStatement = (type, model) => {
+    if(!modelSchema.hasOwnProperty(type)) {
+        throw new Error('Invalid Type');
+    }
+    const keys = Object.keys(model);
+    let setStatement = '';
+    keys.forEach((key, index) => {
+        let value = model[key];
+
+        if (typeof value == 'string') value = `'${value}'`;
+        if (index == keys.length - 1) {
+            setStatement = `${setStatement}${key} = ${value}`
+            console.log(setStatement)
+        } else {
+            setStatement = `${setStatement}${key} = ${value}, `
+            console.log(setStatement)
+        }
+    })
+    console.log(setStatement);
+    return setStatement;
+}
+
 module.exports = {
     getIdString,
     modelSchema,
     formatValues,
     formatColumns,
-    createWhereClause
+    createWhereClause,
+    createSetStatement
 }

@@ -5,6 +5,7 @@ const {
     modelSchema,
     formatValues,
     formatColumns,
+    createSetStatement,
     createWhereClause
 } = require('./util')
 
@@ -52,20 +53,7 @@ const addInstance = async (type, model) => {
 }
 
 const updateInstanceById = async (type, id, model) => {
-    const schemaArr = modelSchema[type].split(', ');
-    let setArr = []
-    schemaArr.forEach((col, index) => {
-        let value = model[col];
-        if (typeof value == 'string') value = `'${value}'`
-        if (index == schemaArr.length - 1) {
-            setArr.push(`${col} = ${value}`)
-        } else {
-            setArr.push(`${col} = ${value},`)
-        }
-    })
-
-    const setString = setArr.join(' ')
-    const text = `UPDATE ${type} SET ${setString} WHERE ${createWhereClause(type, id)}`
+    const text = `UPDATE ${type} SET ${createSetStatement(type, model)} WHERE ${createWhereClause(type, id)}`
     const response = await query(text);
     const instance = getInstanceById(type, id);
     if (!instance) return {};
