@@ -5,6 +5,7 @@ const multer = require('multer');
 const upload = multer();
 const dateCreated = require('../util/dateCreated');
 const userAuth = require('../util/userAuth.js');
+const cartSetup = require('../util/cartSetup.js');
 
 
 const type = 'users';
@@ -14,12 +15,8 @@ usersRouter.get('/test', (req, res)=> {
 })
 
 
-// Checking ID middleware
-usersRouter.use('/:id', userAuth.checkUserId);
-
-
 // Register and new user and add to the database
-usersRouter.post('/register', upload.none(), dateCreated, userAuth.hashPassword, async (req, res) => {
+usersRouter.post('/register', upload.none(), dateCreated, userAuth.hashPassword, async (req, res, next) => {
     const model = req.body;
     model.date_created = req.dateCreated;
     
@@ -28,7 +25,18 @@ usersRouter.post('/register', upload.none(), dateCreated, userAuth.hashPassword,
 
     const added = await db.addInstance(type, model);
     if (!added ) return res.status(501).json('Not added to the database');
-    res.status(201).json(model);
+    
+    // Add a cart for the user
+    const id = await db.getUserId(model.username);
+    try {
+        const cartAdded = await cartSetup(id); 
+        if (!cartAdded) throw new Error('Cart could not be added');
+        res.status(201).json(model);
+            
+    } catch (err) {
+        db.removeInstanceById(type, id);
+        return res.status(500).json({'msg': 'User not added, failure in setup process.', 'error message': err.message, 'stack trace': err.stack});          
+    }
 })
 
 // Login a new user, send the user object in the response
@@ -44,6 +52,9 @@ usersRouter.get('/', async (req, res) => {
     if(!response) return res.status(500).json('Issue retrieving records');
     res.status(200).json(response.rows);
 })
+
+// Checking ID middleware
+usersRouter.use('/:id', userAuth.checkUserId);
 
 // Get single user by id
 usersRouter.get('/:id', async (req, res) => {

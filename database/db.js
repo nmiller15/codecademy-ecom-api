@@ -49,13 +49,10 @@ const getUserId = async (username) => {
     const text = `SELECT id FROM users WHERE username = '${username}';`
     try {
         const response = await query(text);
-        if (!response.rows[0].password) return false
-        return {
-            id: response.rows[0].id,
-            password: response.rows[0].password
-        }
+        if (!response.rows[0].id) throw new Error('No user found.')
+        return response.rows[0].id;
     } catch (err) {
-        return false;
+        return err;
     }
 }
 
