@@ -13,12 +13,12 @@ cartRouter.get('/test', (req, res) => {
 });
 
 // Get the contents of a cart using the user id
-cartRouter.get('/:id', (req, res) => {
+cartRouter.get('/:id', async (req, res) => {
     if (!req.session.isAuthenticated) return res.status(400).json("You must be logged in to view a cart.");
     const id = req.params.id;
-    const response = db.getInstanceById(type, id);
+    const response = await db.getInstanceById(type, id);
     if (!response) return res.status(400).json('Unable to retrieve record from database.');
-    console.table(response);
+    console.log(response);
     res.status(200).send(response);
 })
 
