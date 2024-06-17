@@ -43,13 +43,19 @@ const checkUserId = async (req, res, next) => {
 }
 
 const isAuthenticated = (req, res, next) => {
-    if (req.session.isAuthenticated) next();
-    next('/login');
+    if (req.session.isAuthenticated) {
+        next();
+    } else {
+        next('/login');
+    }
 }
 
-const isAdmin = (req, res, next) => {
-    if (req.session.user.isadmin) next();
-    res.status(401).json('You are not authorized to access this resource.');
+const isAdmin = (req, res, next) => {;
+    if (req.session.user.isadmin) {
+        next()
+    } else {
+        res.status(401).json('You are not authorized to access this resource.');
+    };
 }
 
 module.exports = {
