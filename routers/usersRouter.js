@@ -58,7 +58,7 @@ usersRouter.put('/:id', upload.none(), async (req, res) => {
     try {
         const id = req.params.id;
         const model = req.body; 
-        if (model.isadmin !== req.session.user.isadmin) return res.status(401).json("Unable to change admin status.");
+        if (model.isadmin !== undefined && model.isadmin !== req.session.user.isadmin) return res.status(401).json("Unable to change admin status");
         const response = await db.updateInstanceById(type, id, model)
         if (!response) return res.status(500).json('Issue retrieving records');
         res.status(200).json({"msg": "Updated successfully", "user": response});
