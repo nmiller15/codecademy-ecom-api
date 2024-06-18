@@ -67,4 +67,15 @@ productsRouter.put('/:id', userAuth.isAdmin, async (req, res) => {
     res.status(201).json(response);
 })
 
+// Remove a product from the database
+productsRouter.delete('/:id', userAuth.isAdmin, async (req, res) => {
+    const id = req.product.id;
+    const clearCarts = await db.removeInstanceById()
+    const response = await db.removeInstanceById(type, id);
+    // console.log(response);
+    if (response.command != 'DELETE') return res.status(500).send('Could not remove product');
+    res.status(200).json("Product removed.");
+
+})
+
 module.exports = productsRouter

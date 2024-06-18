@@ -73,8 +73,27 @@ const updateInstanceById = async (type, id, model) => {
 
 const removeInstanceById = async (type, id, secondaryId) => {
     const text = `DELETE FROM ${type} WHERE ${createWhereClause(type, id, secondaryId)}`
-    const response = await query(text);
-    return response;
+    // Handle products foreign key constraint - remove all instances
+    if (type == "products") {
+        try {
+            const response = await query(text);
+            console.log(response)
+            return response;    
+        } catch (err) {
+            console.log(err.message);
+            if (err.message.includes("products_carts_product_id_fkey") || err.message.includes("products_orders_products_id_fkey")) {
+                const removedFromCarts = await query(`DELETE FROM products_carts WHERE product_id = '${id}';`);
+                const removedFromOrders = await query(`DELETE FROM products_orders WHERE product_id = '${id}';`);
+                console.log(removedFromCarts)
+                console.log(removedFromOrders);
+                if (removedFromCarts && removedFromOrders) {
+                    const response = await query(text);
+                    console.log(response);
+                    return response;
+                }
+            }
+        }
+    }
 }
 
 module.exports = {
