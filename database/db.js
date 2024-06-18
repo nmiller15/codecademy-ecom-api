@@ -84,11 +84,8 @@ const removeInstanceById = async (type, id, secondaryId) => {
             if (err.message.includes("products_carts_product_id_fkey") || err.message.includes("products_orders_products_id_fkey")) {
                 const removedFromCarts = await query(`DELETE FROM products_carts WHERE product_id = '${id}';`);
                 const removedFromOrders = await query(`DELETE FROM products_orders WHERE product_id = '${id}';`);
-                console.log(removedFromCarts)
-                console.log(removedFromOrders);
                 if (removedFromCarts && removedFromOrders) {
                     const response = await query(text);
-                    console.log(response);
                     return response;
                 }
             }
