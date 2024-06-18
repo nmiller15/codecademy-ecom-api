@@ -57,4 +57,14 @@ productsRouter.get('/:id', async (req, res) => {
     res.json(product);
 })
 
+// Edit a product by id -- admin only
+productsRouter.put('/:id', userAuth.isAdmin, async (req, res) => {
+    const id = req.product.id;
+    const model = req.body;
+
+    const response = await db.updateInstanceById(type, id, model);
+    if (!response) return res.status(500).send('Could not edit product');
+    res.status(201).json(response);
+})
+
 module.exports = productsRouter
