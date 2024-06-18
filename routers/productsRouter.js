@@ -25,7 +25,7 @@ productsRouter.get('/', async (req, res) => {
     res.json(products);
 })
 
-// Add a product
+// Add a product, admin only
 productsRouter.post('/', userAuth.isAdmin, async (req, res) => {
     // Create unique name and id in development
     if (process.env.NODE_ENV == "development") {
