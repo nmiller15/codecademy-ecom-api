@@ -10,18 +10,15 @@ ordersRouter.get('/test', (req, res) => {
 
 const type = 'orders';
 
-// Get a list of all orders with an identifying username and address information
-// Admin only
-ordersRouter.get('/', userAuth.isAdmin, async (req, res) => {
-    const response = await db.getAllInstances(type);
+// Get a list of all orders that are your own
+ordersRouter.get('/', async (req, res) => {
+    const userId = req.session.user.id;
+    const response = await db.getAllInstances(type, userId);
     if (!response) return res.status(500).json('Could not get orders from database.');
     const orders = response.rows;
+    if (!orders) return res.status(200).json('You have no orders');
     res.status(200).json(orders);
 })
-
-
-// Get a list of all orders that are your own
-
 
 // Add an order for the current user
 ordersRouter.post('/', userAuth.isAuthenticated, dateCreated, async (req, res) => {
@@ -54,6 +51,17 @@ ordersRouter.post('/', userAuth.isAuthenticated, dateCreated, async (req, res) =
         return res.status(400).json(err.message);
     }
 })
+
+// Get a list of all orders with an identifying username and address information
+// Admin only
+ordersRouter.get('/all', userAuth.isAdmin, async (req, res) => {
+    const response = await db.getAllInstances(type);
+    if (!response) return res.status(500).json('Could not get orders from database.');
+    const orders = response.rows;
+    res.status(200).json(orders);
+})
+
+
 
 
 // Get one order by id -- must be your own or be an admin

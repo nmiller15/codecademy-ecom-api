@@ -9,9 +9,10 @@ const {
     createWhereClause
 } = require('./util')
 
-const getAllInstances = async (type) => {
-    const text = type == "orders" ? `SELECT * FROM ${type} JOIN users ON orders.user_id = users.id;` 
-                                  : `SELECT * FROM ${type}`;
+const getAllInstances = async (type, userId) => {
+    const text = type == "orders" && userId ? `SELECT * FROM orders JOIN users ON orders.user_id = users.id WHERE user_id = ${userId};`
+                        : type == "orders" ? `SELECT * FROM ${type} JOIN users ON orders.user_id = users.id;`
+                        : `SELECT * FROM ${type}`;
     const response = await query(text);
     return response;
 }
