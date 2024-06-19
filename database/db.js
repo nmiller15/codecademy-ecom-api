@@ -59,7 +59,7 @@ const getUserId = async (username) => {
 const addInstance = async (type, model) => {
     const schema = formatColumns(type, model);
     const values = formatValues(type, model);
-    const text = `INSERT INTO ${type} (${schema}) VALUES (${values})`;
+    const text = `INSERT INTO ${type} (${schema}) VALUES (${values}) RETURNING ${modelSchema[type]}`;
     return await query(text);
 }
 
