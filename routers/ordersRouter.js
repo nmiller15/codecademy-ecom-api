@@ -70,8 +70,14 @@ ordersRouter.get('/:number', userAuth.checkUserId, async (req, res) => {
     res.status(200).json(order);
 })
 
-// Edit an order -- must be your own or be an admin
-
+// Edit an order's status -- must be your own or be an admin
+ordersRouter.put('/:number', userAuth.checkUserId, async (req, res) => {
+    const id = req.params.number;
+    const model = req.body;
+    const updatedOrder = await db.updateInstanceById(type, id, model);
+    if (!updatedOrder) return res.status(500).json('Could not update order.');
+    res.status(201).json(updatedOrder);
+})
 
 // Delete an order -- check that status is cancelled, order is own or is admin
 
