@@ -10,20 +10,16 @@ const {
 } = require('./util')
 
 const getAllInstances = async (type) => {
-    const text = `SELECT * FROM ${type}`
+    const text = type == "orders" ? `SELECT * FROM ${type} JOIN users ON orders.user_id = users.id;` 
+                                  : `SELECT * FROM ${type}`;
     const response = await query(text);
     return response;
 }
     
 const getInstanceById = async (type, id, secondaryId, ) => {
-    let text;
-    if (type == 'carts') {
-        text = `SELECT products_carts.id AS listing_id, carts.id, user_id, product_id, name AS product_name, img_path, description FROM carts LEFT JOIN products_carts ON products_carts.cart_id = carts.id LEFT JOIN products ON products_carts.product_id = products.id WHERE user_id = ${id};;`
-    } else if (type == 'orders') {
-        text = `SELECT * FROM products_orders JOIN products ON products.id = products_orders.product_id JOIN orders ON orders.number = products_orders.order_number WHERE orders.number = ${id};`
-    } else {
-        text = `SELECT * FROM ${type} WHERE ${createWhereClause(type, id, secondaryId)}`
-    }
+    const text = type == 'carts' ? `SELECT products_carts.id AS listing_id, carts.id, user_id, product_id, name AS product_name, img_path, description FROM carts LEFT JOIN products_carts ON products_carts.cart_id = carts.id LEFT JOIN products ON products_carts.product_id = products.id WHERE user_id = ${id};`
+               : type == 'orders' ? `SELECT * FROM products_orders JOIN products ON products.id = products_orders.product_id JOIN orders ON orders.number = products_orders.order_number WHERE orders.number = ${id};`
+               : `SELECT * FROM ${type} WHERE ${createWhereClause(type, id, secondaryId)}`
     const response = await query(text)
     if (type == 'carts' || type == 'orders') return response.rows;
     const instance = response.rows[0];

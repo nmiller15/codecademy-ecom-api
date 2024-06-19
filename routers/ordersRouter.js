@@ -12,6 +12,12 @@ const type = 'orders';
 
 // Get a list of all orders with an identifying username and address information
 // Admin only
+ordersRouter.get('/', userAuth.isAdmin, async (req, res) => {
+    const response = await db.getAllInstances(type);
+    if (!response) return res.status(500).json('Could not get orders from database.');
+    const orders = response.rows;
+    res.status(200).json(orders);
+})
 
 
 // Get a list of all orders that are your own
