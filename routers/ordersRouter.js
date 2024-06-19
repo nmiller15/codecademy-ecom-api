@@ -62,10 +62,13 @@ ordersRouter.get('/all', userAuth.isAdmin, async (req, res) => {
 })
 
 
-
-
 // Get one order by id -- must be your own or be an admin
-
+ordersRouter.get('/:number', userAuth.checkUserId, async (req, res) => {
+    const id = req.params.number;
+    const order = await db.getInstanceById(type, id);
+    if (!order) return res.status(500).json('Could not get order.');
+    res.status(200).json(order);
+})
 
 // Edit an order -- must be your own or be an admin
 
