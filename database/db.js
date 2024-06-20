@@ -18,7 +18,7 @@ const getAllInstances = async (type, userId) => {
 }
     
 const getInstanceById = async (type, id, secondaryId, ) => {
-    const text = type == 'carts' ? `SELECT  * FROM products_ordeproducts_carts.id AS listing_id, carts.id, user_id, product_id, name AS product_name, img_path, description FROM carts LEFT JOIN products_carts ON products_carts.cart_id = carts.id LEFT JOIN products ON products_carts.product_id = products.id WHERE user_id = ${id};`
+    const text = type == 'carts' ? `SELECT products_carts.id AS listing_id, carts.id, user_id, product_id, name AS product_name, img_path, description FROM carts LEFT JOIN products_carts ON products_carts.cart_id = carts.id LEFT JOIN products ON products_carts.product_id = products.id WHERE user_id = ${id};`
                : type == 'orders' ? `SELECT * FROM orders LEFT JOIN products_orders ON orders.number = products_orders.order_number LEFT JOIN products ON products_orders.product_id = products.id LEFT JOIN users ON orders.user_id = users.id WHERE orders.number = ${id};`
                : `SELECT * FROM ${type} WHERE ${createWhereClause(type, id, secondaryId)}`
     const response = await query(text)
